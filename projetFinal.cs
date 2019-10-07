@@ -7,14 +7,13 @@ class projet_final
 {
 	static void Main()
 	{
-		//Déclaration des variables
+		//Déclaration et initialisation des variables
 		int decalage = 0;
 		int occurence = 0;
 		int nbr = 0;
-		int nbr2 = 0;
-		int nbr3 = 0;
 		char reponse = ' ';
 		bool continuer = true;
+		string msg_utilisateur = "";
 		string lettre_max = "";
 		string chaine_decryptee = "";
 		string message = "";
@@ -22,71 +21,103 @@ class projet_final
 		string crypt = "";
 		string decrypt_brute = "";
 
-		//Initalisation par l'utilisateur
-
+		//Menu
 		while(continuer == true)
 		{
-			Console.WriteLine("Que voulez-vous faire ? (1: Crypter un message; 2: Décrypter façon brute; 3: Décrypter par fréquence.");
+			//Demande a l'utilisateur ce qu'il veut faire
+			Console.WriteLine("Que voulez-vous faire ? (1: Crypter un message; 2: Décrypter façon brute; 3: Décrypter par fréquence. \n");
 			nbr = int.Parse(Console.ReadLine());
+			//S'il veut crypter un message, le programme rentre dans cette condition
 			if(nbr == 1)
 			{
-				Console.WriteLine("Quel est votre message ?");
+				//Il demande a l'utilisateur d'entrer son message puis le décalage qu'il veut appliquer au message
+				Console.WriteLine("Quel est votre message ? \n");
 				message = Console.ReadLine();
-				Console.WriteLine("Quel est le décalage souhaité ?");
+				Console.WriteLine("Quel est le décalage souhaité ? \n");
 				decalage = int.Parse(Console.ReadLine());
+				//Ensuite on appelle les fonctions d'harmonisation et de cryptage qui servent a supprimer les caractères interdits et crypter le message
 				harm = supprim_interdit(message);
 				crypt = cryptage_chaine(harm, decalage);
-				Console.WriteLine("Le message crypté est : " + crypt);
+				//Puis on écris simplement le message
+				Console.WriteLine("Le message crypté est : " + crypt + "\n");
 			}
+			//S'il veut décrypter de façon brute, le programme rentre dans cette condition
 			else if(nbr == 2)
 			{
-				Console.WriteLine("Le dernier message crypter est : " + crypt);
-				Console.WriteLine("Voulez-vous tenter de le décrypter ? (1: OUI; 2: NON)");
-				nbr2 = int.Parse(Console.ReadLine());
-				while(nbr2 < 1 || nbr2 > 2)
+				//Ensuite si l'utilisateur n'a crypter aucun message précédemment, le programme rentre dans cette condition
+				if(message == "")
 				{
-					if(nbr2 == 1)
+					//Ici on demande a l'utilisateur de saisir le message qu'il veut décrypter ou de taper Q s'il n'a aucun message a décrypter
+					Console.WriteLine("Veuillez saisir votre message crypté : (Q si vous n'en avez pas) \n");
+					msg_utilisateur = Console.ReadLine();
+					if(msg_utilisateur == "Q")
 					{
-						harm = supprim_interdit(message);
-						crypt = cryptage_chaine(harm, decalage);
-						decrypt_brute = decryptage_brute(crypt);
+						//S'il appuie sur Q, on sors de la condition
+						Console.WriteLine("Aucun message crypté, veuillez réessayer." + "\n");
 					}
 					else
 					{
-						Console.WriteLine("Aurevoir");
-					}
+						//S'il saisit son message on remplace la valeur du message crypté par le message que l'utilisateur nous a donné et on l'affiche
+						crypt = msg_utilisateur;
+						Console.WriteLine("Le dernier message crypté est : " + crypt + "\n");
+						//Puis on execute la fonction de décryptage brute où se passera le décryptage
+						decryptage_brute(crypt);
+					}	
+				}
+				//Si l'utilisateur a précédemment crypté un message, il sera déjà enregistré dans le programme
+				else
+				{
+					Console.WriteLine("Le dernier message crypter est : " + crypt + "\n");
+					//Donc ici on execute simplement la fonction de décryptage brute
+					decryptage_brute(crypt);
 				}
 			}
+			//S'il veut décrypter un message par fréquence le programme rentre dans cette condition
 			else if(nbr == 3)
 			{
-				Console.WriteLine("Le dernier message crypter est : " + crypt);
-				Console.WriteLine("Voulez-vous tenter de le décrypter ? (1: OUI; 2: NON)");
-				nbr3 = int.Parse(Console.ReadLine());
-				while(nbr3 < 1 || nbr3 > 2)
+				//Ensuite si l'utilisateur n'a crypter aucun message précédemment, le programme rentre dans cette condition
+				if(message == "")
 				{
-					if(nbr3 == 1)
+					//Ici on demande a l'utilisateur de saisir le message qu'il veut décrypter ou de taper Q s'il n'a aucun message a décrypter
+					Console.WriteLine("Veuillez saisir votre message crypté : (Q si vous n'en avez pas) \n");
+					msg_utilisateur = Console.ReadLine();
+					if(msg_utilisateur == "Q")
 					{
-						harm = supprim_interdit(message);
-						crypt = cryptage_chaine(harm, decalage);
-						lettre_max = lettreMax(crypt);
-						chaine_decryptee = decryptageFrequence(lettre_max, crypt);
+						//S'il appuie sur Q, on sors de la condition
+						Console.WriteLine("Aucun message crypté, veuillez réessayer." + "\n");
 					}
 					else
 					{
-						Console.WriteLine("Aurevoir");
-					}
+						//S'il saisit son message on remplace la valeur du message crypté par le message que l'utilisateur nous a donné et on l'affiche
+						crypt = msg_utilisateur;
+						Console.WriteLine("Le dernier message crypté est : " + crypt + "\n");
+						//Puis on execute les 2 fonctions permettant de faire fonctionner le décryptage fréquence et tout se passera dans la fonction
+						lettre_max = lettreMax(crypt);
+						decryptageFrequence(lettre_max, crypt);
+					}	
 				}
+				//Si l'utilisateur a précédemment crypté un message, il sera déjà enregistré dans le programme
+				else
+				{
+					Console.WriteLine("Le dernier message crypter est : " + crypt + "\n");
+					//On execute donc les 2 fonctions permettant de faire fonctionner le décryptage fréquence
+					lettre_max = lettreMax(crypt);
+					decryptageFrequence(lettre_max, crypt);
+				}	
 			}
+			//S'il saisit autre chose que 1, 2 ou 3 on lui renvoie un message d'erreur
 			else
 			{
-				Console.WriteLine("Fonction introuvable, veuillez recommencer.");
+				Console.WriteLine("Fonction introuvable, veuillez recommencer. \n");
 			}
-			Console.WriteLine("Voulez-vous continuer ? (O/N)");
+			//Ensuite on demande a l'utilisateur s'il veut continuer ou non de rester dans le programme
+			Console.WriteLine("Voulez-vous continuer ? (O/N) \n");
 			reponse = char.Parse(Console.ReadLine());
+			//S'il repond N on sors du programme, sinon on recommence
 			if(reponse == 'N')
 			{
 				continuer = false;
-				Console.WriteLine("Aurevoir");
+				Console.WriteLine("Aurevoir \n");
 			}
 		}
 	}
@@ -264,8 +295,8 @@ class projet_final
 			}
 
 			//Puis on écris la chaîne proposée et on demande a l'utilisateur si le message est compréhensible
-			Console.WriteLine(decryptage);
-			Console.WriteLine("Le message est-il compréhensible ? (O/N)");
+			Console.WriteLine("Proposition " + decryptage);
+			Console.WriteLine("Le message est-il compréhensible ? (O/N) \n");
 			rep_utilisateur = Console.ReadLine();
 
 			//Si le message est compréhensible on utilise la condition 'if' ci-dessous pour faire passer le booleen en 'true' et sortir
@@ -319,7 +350,6 @@ class projet_final
 			chMaxOcc += maxOcc;
 			maxOcc = ' ';
 		}
-		Console.WriteLine("La chaine max est : " + chMaxOcc);
 		return chMaxOcc;
 		
 	}
@@ -351,8 +381,8 @@ class projet_final
 				}
 				chaine_decryptee += (char)(nombre);
 			}
-			Console.WriteLine(chaine_decryptee);
-			Console.WriteLine("compréhensible ?");
+			Console.WriteLine("Proposition : " + chaine_decryptee);
+			Console.WriteLine("Le message est-il compréhensible ? (O/N) \n");
 			lettre = char.Parse(Console.ReadLine());
 			if(lettre == 'O')
 			{
