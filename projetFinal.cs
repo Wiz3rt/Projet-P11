@@ -9,17 +9,14 @@ class projet_final
 	{
 		//Déclaration et initialisation des variables
 		int decalage = 0;
-		int occurence = 0;
 		int nbr = 0;
 		char reponse = ' ';
 		bool continuer = true;
 		string msg_utilisateur = "";
 		string lettre_max = "";
-		string chaine_decryptee = "";
 		string message = "";
 		string harm = "";
 		string crypt = "";
-		string decrypt_brute = "";
 
 		//Menu
 		while(continuer == true)
@@ -92,7 +89,7 @@ class projet_final
 						crypt = msg_utilisateur;
 						Console.WriteLine("Le dernier message crypté est : " + crypt + "\n");
 						//Puis on execute les 2 fonctions permettant de faire fonctionner le décryptage fréquence et tout se passera dans la fonction
-						lettre_max = lettreMax(crypt);
+						lettre_max = occurenceLettreMax(crypt);
 						decryptageFrequence(lettre_max, crypt);
 					}	
 				}
@@ -101,7 +98,7 @@ class projet_final
 				{
 					Console.WriteLine("Le dernier message crypter est : " + crypt + "\n");
 					//On execute donc les 2 fonctions permettant de faire fonctionner le décryptage fréquence
-					lettre_max = lettreMax(crypt);
+					lettre_max = occurenceLettreMax(crypt);
 					decryptageFrequence(lettre_max, crypt);
 				}	
 			}
@@ -148,7 +145,7 @@ class projet_final
 		//On prend le nombre de caractères de la chaîne
 		longeur = xMessage.Length;
 
-		//Ensuite on effectue une boucle 'pour' afin de traiter la chaîne caractère par caractère
+		//Ensuite on effectue une boucle 'for' afin de traiter la chaîne caractère par caractère
 		for(i=0;i<longeur;i++)
 		{
 			//Ici on utilise une conversion explicite avec le (int) car on a une conversion type en numérique
@@ -198,46 +195,48 @@ class projet_final
 		//Déclaration des variables
 		int j;
 		int k;
-		int decalage;
+		int decalage = 1;
 		int nombre;
 		int longeur;
-		int caractere;
-		int reste;
 		string chaine_cryptee = "";
 
-		//On prend le nombre de caractères de la chaîne
-		longeur = xHarm.Length;
 
-		//On utilise une boucle 'pour' afin de traiter caractère par caractère
-		for(j=0;j<longeur;j++)
+		//On utilise une boucle 'for' afin de traiter caractère par caractère
+		for(j=0;j<xHarm.Length;j++)
 		{
 			nombre = xHarm[j];
+			//Si on entre un décalage négatif, le programme rentre dans cette condition
 			if(xDecalage < 0)
 			{
-				decalage = 1;
+				//Ici k ira de 0 jusqu'au décalage en enlevant 1 a chaque tour
 				for(k=0;k>xDecalage;k--)
 				{
 					nombre = nombre - decalage;
+					//Et si le nombre descend sous le nombre de caractère ASCII de 'a' on remet 'z'
 					if(nombre < 97)
 					{
 						nombre = 122;
 					}
 				}
 			}
+			//Si le décalage est positif, le programme rentre dans cette condition
 			else
 			{
-				decalage = 1;
+				//Ici k ira de 0 jusqu'au décalage en ajoutant 1 a chaque tour
 				for(k=0;k<xDecalage;k++)
 				{
 					nombre = nombre + decalage;
+					//Si le nombre monte plus haut que le nombre du caractère ASCII 'z', on remet 'a'
 					if(nombre > 122)
 					{
 						nombre = 97;
 					}
 				}
 			}
+			//Puis on ajoute chaque caractère a la nouvelle chaîne
 			chaine_cryptee += (char)(nombre);
 		}
+		//Puis on retourne la valeur
 		return chaine_cryptee;
 	}
 
@@ -312,89 +311,172 @@ class projet_final
 			}
 			l++;
 		}
+		//Ensuite on retourne la valeur
 		return decryptage;
 	}
 
 
+
+	/*
+		nbOcc : fonction : int
+		Cette fonction sert a donner le nombre d'occurence d'un caractère dans une chaîne, la fonction sera utilisé dans la
+		  fonction de calcul des occurences de chacunes des lettres
+		Paramètres :
+			xCrypt : string
+			xCaractere : char
+		Local :
+			m : int
+			nombre_occurence : int
+		Retour :
+			nombre_occurence : int
+	*/
 	public static int nbOcc(char xCaractere, string xCrypt)
 	{
 		//Déclaration des variables
-		int i;
+		int m;
 		int nombre_occurence = 0;
-		for(i=0;i<xCrypt.Length;i++)
+
+		//Cette boucle 'for' sert a parcourir le message crypté en le traitant caractère par caractère
+		for(m=0;m<xCrypt.Length;m++)
 		{
-			if(xCrypt[i] == xCaractere)
+			//Ici si le caractère de la chaîne cryptée est égale au caractère défini on entre dans la condition
+			if(xCrypt[m] == xCaractere)
 			{
+				//Puis on incrémente la valeur 'nombre_occurence'
 				nombre_occurence++;
 			}
 		}
+		//On retourne le nombre d'occurences de la lettre en question
 		return nombre_occurence;
 	}
 
 
-	public static string lettreMax(string xCrypt)
+
+	/*
+		occurenceLettreMax : fonction : string
+		Cette fonction sert a renvoyer une chaîne de caractères ou seront inscrit les lettres avec le maximum d'occurence
+		  dans l'ordre
+		Paramètres :
+			xCrypt : string
+		Local :
+			n : int
+			maxOCC : char
+			chMaxOcc : string
+		Retour :
+			chMaxOcc : string
+	*/
+
+	public static string occurenceLettreMax(string xCrypt)
 	{
-		int i = 0;
-		int reponse = 0;
+		//Déclaration des variables
+		int n = 0;
 		char maxOcc = ' ';
 		string chMaxOcc = "";
-		while(chMaxOcc.Length < xCrypt.Length)
+
+		//Ici tant que la longeur de la chaîne des caractères avec le maximum d'occurence est inférieure ou égale à la longeur
+		//de la chaîne cryptée on reste dans la boucle
+		while(chMaxOcc.Length <= xCrypt.Length)
 		{
-			for(i=0;i<xCrypt.Length;i++)
+			//Avec cette boucle 'for', on parcours la chaîne cryptée
+			for(n=0;n<xCrypt.Length;n++)
 			{
-				if(nbOcc(xCrypt[i], xCrypt) > nbOcc(maxOcc, xCrypt) && nbOcc(xCrypt[i], chMaxOcc) == 0)
+				//Ici si le nombre d'occurences du caractère de la chaîne cryptée est plus grand que celui du max d'occurence par rapport
+				//à la chaîne cryptée et que le caractère n'est pas présent dans la chaîne 'chMaxOcc' on rentre dans la condition
+				if(nbOcc(xCrypt[n], xCrypt) > nbOcc(maxOcc, xCrypt) && nbOcc(xCrypt[n], chMaxOcc) == 0)
 				{
-					maxOcc = xCrypt[i];
+					//Ensuite on prend le caractère et on l'extrait dans une variable char
+					maxOcc = xCrypt[n];
 				}
 			}
+			//A chaque tour on ajoute la valeur du maximum d'occurence dans la chaîne
 			chMaxOcc += maxOcc;
+			//Et on réinitialise le caractère du maximum d'occurence
 			maxOcc = ' ';
 		}
+		//On finit par retourner la chaîne de caractères avec le maximum d'occurences
 		return chMaxOcc;
-		
 	}
 
+
+
+
+	/*
+		decryptageFrequence : fonction : string
+		Cette fonction sert a décrypter une chaîne de caractères par fréquence grâce à une fonction qui cherche le nombre
+		  d'occurences de chaque lettres
+		Paramètres :
+			xCrypt : string
+			xLettreMax : string
+		Local :
+			o : int
+			p : int
+			q : int
+			nombre : int
+			decalage : int
+			lettre : char
+			reponse : bool
+			chaine_decryptee : string
+		Retour :
+			chaine_decryptee : string
+	*/
 	public static string decryptageFrequence(string xLettreMax, string xCrypt)
 	{
-		int j = 0;
-		int k = 0;
-		int l = 0;
-		char lettre;
+		//Déclaration des variables
+		int o = 0;
+		int p = 0;
+		int q = 0;
 		int nombre;
 		int decalage = 0;
-		int reste = 0;
+		char lettre;
 		bool reponse = false;
 		string chaine_decryptee = "";
+
+		//Ici tant que l'utilisateur ne comprend pas le résultat on reste dans la boucle 'while'
 		while(reponse == false)
 		{
-			decalage = xLettreMax[l] - 101;
-			for(j=0;j<xCrypt.Length;j++)
+			//Le décalage sert a savoir ou est positionnée le caractère par rapport a 'e' dans l'alphabet
+			decalage = xLettreMax[q] - 101;
+			//La boucle 'for' sert à parcourir la chaîne cryptée
+			for(o=0;o<xCrypt.Length;o++)
 			{
-				nombre = xCrypt[j];
-				for(k=0;k<decalage;k++)
+				//Ici on prend la valeur ASCII du caractère
+				nombre = xCrypt[o];
+				//Cette boucle 'for' permet de tester a chaque tour si le caractère va dépasser la valeur max 
+				for(p=0;p<decalage;p++)
 				{
+					//On enlève 1 au la valeur ASCII a chaque tour
 					nombre = nombre - 1;
+					//Et si le nombre passe en dessous de la valeur ASCII pour 'a'
 					if(nombre < 97)
 					{
+						//On remplace sa valeur par celle du caractère 'z'
 						nombre = 122;
 					}
 				}
+				//Ensuite on change a nouveau la valeur ASCII en char et on ajoute la caractère a la nouvelle chaîne
 				chaine_decryptee += (char)(nombre);
 			}
+			//Ensuite on demande a l'utilisateur si le message est compréhensible ou pas et on récupere la valeur qu'il nous envoie
 			Console.WriteLine("Proposition : " + chaine_decryptee);
 			Console.WriteLine("Le message est-il compréhensible ? (O/N) \n");
 			lettre = char.Parse(Console.ReadLine());
+			//Si l'utilisateur répond 'O' qui veut dire OUI, on passe le booléen a 'true', qui nous fait sortir de la boucle 'while'
 			if(lettre == 'O')
 			{
 				reponse = true;
-			} 
+			}
+			//Sinon le booléen reste a 'false'
 			else
 			{
 				reponse = false;
+				//Et on réinitialise la chaîne pour reprendre dès le début
 				chaine_decryptee = chaine_decryptee.Remove(0,chaine_decryptee.Length);
 			}
-			l++;
+			//A la fin de la boucle on incrémente la valeur de 'q' qui servira a passer au 2eme caractère de la chaîne d'occurence de
+			//caractères et ainsi tester une option différente
+			q++;
 		}
+		//On retourne la chaîne décryptée
 		return chaine_decryptee;
 	}
 }
