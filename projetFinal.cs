@@ -11,6 +11,7 @@ class projet_final
 		int decalage = 0;
 		int nbr = 0;
 		char reponse = ' ';
+		char utilisation = ' ';
 		bool continuer = true;
 		string msg_utilisateur = "";
 		string lettre_max = "";
@@ -57,8 +58,26 @@ class projet_final
 						//S'il saisit son message on remplace la valeur du message crypté par le message que l'utilisateur nous a donné et on l'affiche
 						crypt = msg_utilisateur;
 						Console.WriteLine("Le dernier message crypté est : " + crypt + "\n");
-						//Puis on execute la fonction de décryptage brute où se passera le décryptage
-						decryptage_brute(crypt);
+						Console.WriteLine("Voulez-vous utiliser ce message ? (o/n)");
+						utilisation = char.Parse(Console.ReadLine());
+						if(utilisation == 'o')
+						{
+							decryptage_brute(crypt);
+						}
+						else
+						{
+							//Il demande a l'utilisateur d'entrer son message puis le décalage qu'il veut appliquer au message
+							Console.WriteLine("Quel est votre message ? \n");
+							message = Console.ReadLine();
+							Console.WriteLine("Quel est le décalage souhaité ? \n");
+							decalage = int.Parse(Console.ReadLine());
+							//Ensuite on appelle les fonctions d'harmonisation et de cryptage qui servent a supprimer les caractères interdits et crypter le message
+							harm = supprim_interdit(message);
+							crypt = cryptage_chaine(harm, decalage);
+							//Puis on écris simplement le message
+							Console.WriteLine("Le message crypté est : " + crypt + "\n");
+							decryptage_brute(crypt);
+						}
 					}	
 				}
 				//Si l'utilisateur a précédemment crypté un message, il sera déjà enregistré dans le programme
@@ -98,8 +117,26 @@ class projet_final
 				{
 					Console.WriteLine("Le dernier message crypter est : " + crypt + "\n");
 					//On execute donc les 2 fonctions permettant de faire fonctionner le décryptage fréquence
-					lettre_max = occurenceLettreMax(crypt);
-					decryptageFrequence(lettre_max, crypt);
+					Console.WriteLine("Voulez-vous utiliser ce message ? (o/n)");
+						utilisation = char.Parse(Console.ReadLine());
+						if(utilisation == 'o')
+						{
+							decryptageFrequence(lettre_max, crypt);
+						}
+						else
+						{
+							//Il demande a l'utilisateur d'entrer son message puis le décalage qu'il veut appliquer au message
+							Console.WriteLine("Quel est votre message ? \n");
+							message = Console.ReadLine();
+							Console.WriteLine("Quel est le décalage souhaité ? \n");
+							decalage = int.Parse(Console.ReadLine());
+							//Ensuite on appelle les fonctions d'harmonisation et de cryptage qui servent a supprimer les caractères interdits et crypter le message
+							harm = supprim_interdit(message);
+							crypt = cryptage_chaine(harm, decalage);
+							//Puis on écris simplement le message
+							Console.WriteLine("Le message crypté est : " + crypt + "\n");
+							decryptageFrequence(lettre_max, crypt);
+						}
 				}	
 			}
 			//S'il saisit autre chose que 1, 2 ou 3 on lui renvoie un message d'erreur
