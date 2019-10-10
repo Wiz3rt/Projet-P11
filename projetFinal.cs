@@ -461,6 +461,7 @@ class projet_final
 		int p = 0;
 		int q = 0;
 		int nombre;
+		int variable;
 		int decalage = 0;
 		char lettre;
 		bool reponse = false;
@@ -476,19 +477,41 @@ class projet_final
 			{
 				//Ici on prend la valeur ASCII du caractère
 				nombre = xCrypt[o];
-				//Cette boucle 'for' permet de tester a chaque tour si le caractère va dépasser la valeur max 
-				for(p=0;p<decalage;p++)
+				//Ici on va gérer le cas dans lequel le décalage serait négatif donc que la lettre avec le nombre d'occurences maximum
+				//aie une valeur en dessous de 'e'
+				if(decalage < 0)
 				{
-					//On enlève 1 au la valeur ASCII a chaque tour
-					nombre = nombre - 1;
-					//Et si le nombre passe en dessous de la valeur ASCII pour 'a'
-					if(nombre < 97)
+					//Ici on prend donc la valeur absolue du décalage
+					variable = Math.Abs(decalage);
+					//Puis dans cette boucle 'for' on calculera le nombre d'incrémentation nécessaires 
+					for(p=0;p<variable;p++)
 					{
-						//On remplace sa valeur par celle du caractère 'z'
-						nombre = 122;
+						//On ajoute 1 au la valeur ASCII a chaque tour
+						nombre = nombre + 1;
+						//Et si la valeur ASCII dépasse 122, on retourne a 97
+						if(nombre > 122)
+						{
+							nombre = 97;
+						}
 					}
 				}
+				//Sinon on traite le décalage normalement
+				else
+				{
+					//Dans cette boucle 'for' on calculera le nombre de décrémentation nécessaires
+					for(p=0;p<decalage;p++)
+					{
+						//On enlève 1 au la valeur ASCII a chaque tour
+						nombre = nombre - 1;
+						//Et si le nombre passe en dessous de la valeur ASCII pour 'a'
+						if(nombre < 97)
+						{
+							//On remplace sa valeur par celle du caractère 'z'
+							nombre = 122;
+						}
+					}
 				//Ensuite on change a nouveau la valeur ASCII en char et on ajoute la caractère a la nouvelle chaîne
+				}
 				chaine_decryptee += (char)(nombre);
 			}
 			//Ensuite on demande a l'utilisateur si le message est compréhensible ou pas et on récupere la valeur qu'il nous envoie
@@ -510,6 +533,11 @@ class projet_final
 			//A la fin de la boucle on incrémente la valeur de 'q' qui servira a passer au 2eme caractère de la chaîne d'occurence de
 			//caractères et ainsi tester une option différente
 			q++;
+			if(q >= xLettreMax.Length)
+			{
+				Console.WriteLine("Vous avez dû manquer le résultat, les propositions vont recommencer");
+				q = 0;
+			}
 		}
 		//On retourne la chaîne décryptée
 		return chaine_decryptee;
