@@ -65,7 +65,7 @@ class projet_final
 				else
 				{
 					//On lui demande ensuite s'il veut utiliser ce message précédemment enregistré ou en décrypter un autre
-					Console.WriteLine("Le dernier message crypter est : " + crypt);
+					Console.WriteLine("Le dernier message crypté est : " + crypt);
 					Console.WriteLine("Voulez-vous utiliser ce message ? \n");
 					utilisation = char.Parse(Console.ReadLine());
 					//S'il répond 'o' on execute simplement la fonction de décryptage brute
@@ -115,7 +115,7 @@ class projet_final
 				else
 				{
 					//On lui demande donc s'il veut utiliser le message pré-enregistré ou non
-					Console.WriteLine("Le dernier message crypter est : " + crypt + "\n");
+					Console.WriteLine("Le dernier message crypté est : " + crypt + "\n");
 					Console.WriteLine("Voulez-vous utiliser ce message ? (o/n) \n");
 					utilisation = char.Parse(Console.ReadLine());
 					//S'il répond 'o' on execute les fonctions de décryptage fréquence
@@ -219,10 +219,10 @@ class projet_final
 			xHarm : string
 			xDecalage : int
 		Local :
-			i : int
-			caractere : int
-			longeur : int
-			reste : int
+			j : int
+			k : int
+			decalage : int
+			nombre : int
 			chaine_cryptee : string
 		Retour :
 			chaine_cryptee : string
@@ -291,9 +291,9 @@ class projet_final
 			caractere : int
 			reponse : bool
 			rep_utilisateur : string
-			decryptage : string
+			chaine_decryptee : string
 		Retour :
-			decryptage : string
+			chaine_decryptee : string
 	*/
 	public static string decryptageBrute(string xCrypt)
 	{
@@ -304,7 +304,7 @@ class projet_final
 		int caractere;
 		bool reponse = false;
 		string rep_utilisateur;
-		string decryptage = "";
+		string chaine_decryptee = "";
 
 		//On utilise une boucle 'while' afin de proposer un décryptage a l'utilisateur jusqu'à ce que le programme trouve la bonne solution
 		while(reponse == false)
@@ -319,17 +319,17 @@ class projet_final
 				{
 					//On utilise le même systeme de reste que dans le cryptage et ensuite on ajoute le caractère a la nouvelle chaîne
 					reste = 122 - caractere;
-					decryptage += (char)(96 + l - reste);
+					chaine_decryptee += (char)(96 + l - reste);
 				}
 				else
 				{
 					//Ici le cas de toutes les lettres sauf 'z'
-					decryptage += (char)(caractere + l);
+					chaine_decryptee += (char)(caractere + l);
 				}
 			}
 
 			//Puis on écris la chaîne proposée et on demande a l'utilisateur si le message est compréhensible
-			Console.WriteLine("Proposition : " + decryptage);
+			Console.WriteLine("Proposition : " + chaine_decryptee);
 			Console.WriteLine("Le message est-il compréhensible ? (o/n) \n");
 			rep_utilisateur = Console.ReadLine();
 
@@ -342,12 +342,12 @@ class projet_final
 			//Si l'utilisateur ne comprend pas le message, on efface ce qu'il y a dans la chaîne et on recommence le processus
 			else
 			{
-				decryptage = decryptage.Remove(0,xCrypt.Length);
+				chaine_decryptee = chaine_decryptee.Remove(0,xCrypt.Length);
 			}
 			l++;
 		}
 		//Ensuite on retourne la valeur
-		return decryptage;
+		return chaine_decryptee;
 	}
 
 
@@ -460,38 +460,42 @@ class projet_final
 		int o = 0;
 		int p = 0;
 		int q = 0;
-		int nombre;
-		int variable;
+		int valeur_ascii;
+		int val_abs_decalage;
 		int decalage = 0;
-		char lettre;
+		char rep_utilisateur;
 		bool reponse = false;
 		string chaine_decryptee = "";
+		string harmLettreMax = "";
+
+		//On harmonise la chaîne xLettreMax pour éliminer les caractères interdits
+		harmLettreMax = supprimInterdit(xLettreMax);
 
 		//Ici tant que l'utilisateur ne comprend pas le résultat on reste dans la boucle 'while'
 		while(reponse == false)
 		{
-			//Le décalage sert a savoir ou est positionnée le caractère par rapport a 'e' dans l'alphabet
+			//Le décalage sert a savoir ou est positionné le caractère par rapport a 'e' dans l'alphabet
 			decalage = xLettreMax[q] - 101;
 			//La boucle 'for' sert à parcourir la chaîne cryptée
 			for(o=0;o<xCrypt.Length;o++)
 			{
 				//Ici on prend la valeur ASCII du caractère
-				nombre = xCrypt[o];
+				valeur_ascii = xCrypt[o];
 				//Ici on va gérer le cas dans lequel le décalage serait négatif donc que la lettre avec le nombre d'occurences maximum
 				//aie une valeur en dessous de 'e'
 				if(decalage < 0)
 				{
 					//Ici on prend donc la valeur absolue du décalage
-					variable = Math.Abs(decalage);
+					val_abs_decalage = Math.Abs(decalage);
 					//Puis dans cette boucle 'for' on calculera le nombre d'incrémentation nécessaires 
-					for(p=0;p<variable;p++)
+					for(p=0;p<val_abs_decalage;p++)
 					{
 						//On ajoute 1 au la valeur ASCII a chaque tour
-						nombre = nombre + 1;
+						valeur_ascii = valeur_ascii + 1;
 						//Et si la valeur ASCII dépasse 122, on retourne a 97
-						if(nombre > 122)
+						if(valeur_ascii > 122)
 						{
-							nombre = 97;
+							valeur_ascii = 97;
 						}
 					}
 				}
@@ -502,24 +506,24 @@ class projet_final
 					for(p=0;p<decalage;p++)
 					{
 						//On enlève 1 au la valeur ASCII a chaque tour
-						nombre = nombre - 1;
+						valeur_ascii = valeur_ascii - 1;
 						//Et si le nombre passe en dessous de la valeur ASCII pour 'a'
-						if(nombre < 97)
+						if(valeur_ascii < 97)
 						{
 							//On remplace sa valeur par celle du caractère 'z'
-							nombre = 122;
+							valeur_ascii = 122;
 						}
 					}
 				//Ensuite on change a nouveau la valeur ASCII en char et on ajoute la caractère a la nouvelle chaîne
 				}
-				chaine_decryptee += (char)(nombre);
+				chaine_decryptee += (char)(valeur_ascii);
 			}
 			//Ensuite on demande a l'utilisateur si le message est compréhensible ou pas et on récupere la valeur qu'il nous envoie
 			Console.WriteLine("Proposition : " + chaine_decryptee);
 			Console.WriteLine("Le message est-il compréhensible ? (o/n) \n");
-			lettre = char.Parse(Console.ReadLine());
+			rep_utilisateur = char.Parse(Console.ReadLine());
 			//Si l'utilisateur répond 'O' qui veut dire OUI, on passe le booléen a 'true', qui nous fait sortir de la boucle 'while'
-			if(lettre == 'o')
+			if(rep_utilisateur == 'o')
 			{
 				reponse = true;
 			}
@@ -533,13 +537,16 @@ class projet_final
 			//A la fin de la boucle on incrémente la valeur de 'q' qui servira a passer au 2eme caractère de la chaîne d'occurence de
 			//caractères et ainsi tester une option différente
 			q++;
-			if(q >= xLettreMax.Length)
+			//Au bout d'un moment, la chaîne des lettres maximum arrivera a la fin, cela veut dire que l'utilisateur a manqué son message, on recommence
+			//donc la boucle de propositions grâce a cette condition 'if'
+			if(q >= harmLettreMax.Length)
 			{
-				Console.WriteLine("Vous avez dû manquer le résultat, les propositions vont recommencer");
+				//On lui fait savoir que les propositions vont recommencer
+				Console.WriteLine("Vous avez dû manquer le résultat, les propositions vont recommencer \n");
+				//Puis on réinitialise la valeur de 'q' pour recommencer du début
 				q = 0;
 			}
 		}
-		//On retourne la chaîne décryptée
 		return chaine_decryptee;
 	}
 }
