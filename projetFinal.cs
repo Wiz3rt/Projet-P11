@@ -299,8 +299,6 @@ class projet_final
 	{
 		//Déclaration des variables
 		int k;
-		int l = 1;
-		int reste;
 		int caractere;
 		bool reponse = false;
 		string rep_utilisateur;
@@ -312,20 +310,17 @@ class projet_final
 			//On utilise le même principe de la boucle 'for' que dans la fonction 'cryptage_chaine' mais pour le décryptage
 			for(k=0;k<xCrypt.Length;k++)
 			{
-				//Ici on utilise une conversion explicite avec le (int) car on a une conversion type en numérique
+				//Ici on utilise une conversion explicite avec le (int) pour prendre la valeur ASCII de la lettre
 				caractere = (int)(xCrypt[k]);
+				//Puis on incrémente le caractère de 1
+				caractere++;
 				//Ensuite la condition 'if' va traiter le moments ou les caractères dépasseront 'z' et recommencera a 'a'
-				if(caractere > 122 - l)
+				if(caractere > 122)
 				{
-					//On utilise le même systeme de reste que dans le cryptage et ensuite on ajoute le caractère a la nouvelle chaîne
-					reste = 122 - caractere;
-					chaine_decryptee += (char)(96 + l - reste);
+					caractere = 97;
 				}
-				else
-				{
-					//Ici le cas de toutes les lettres sauf 'z'
-					chaine_decryptee += (char)(caractere + l);
-				}
+				//Puis on ajoute le caractère a la nouvelle chaîne
+				chaine_decryptee += (char)(caractere);
 			}
 
 			//Puis on écris la chaîne proposée et on demande a l'utilisateur si le message est compréhensible
@@ -339,12 +334,14 @@ class projet_final
 			{
 				reponse = true;
 			}
-			//Si l'utilisateur ne comprend pas le message, on efface ce qu'il y a dans la chaîne et on recommence le processus
+			//Si l'utilisateur ne comprend pas le message, on rentre dans cette condition
 			else
 			{
+				//La chaîne décryptée deviens la chaîne cryptée
+				xCrypt = chaine_decryptee;
+				//Et on supprime ce qu'il y a dans la chaîne décryptée
 				chaine_decryptee = chaine_decryptee.Remove(0,xCrypt.Length);
 			}
-			l++;
 		}
 		//Ensuite on retourne la valeur
 		return chaine_decryptee;
